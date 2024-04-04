@@ -15,7 +15,7 @@ const App = () => {
         return res.json();
       })
       .then((data) => {
-        setData(JSON.stringify(data));
+        setData(JSON.stringify(data,null, 2));
         setIsLoading(false);
       })
       .catch((error) => {

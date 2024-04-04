@@ -4,27 +4,35 @@ import "./../styles/App.css";
 const App = () => {
   const [data, setData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        return res.json();
+      })
       .then((data) => {
         setData(JSON.stringify(data));
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        setError(error.message);
         setIsLoading(false);
       });
-  }, []); // Empty dependency array ensures that this effect runs only once
+  }, []);
 
   return (
     <div>
       {isLoading ? (
         <p>Loading....</p>
+      ) : error ? (
+        <p>An error occurred: {error}</p>
       ) : (
         <div>
-          <h1>DATA FETCHED FROM API</h1>
+          <h1>Data Fetched from API</h1>
           <pre>{data}</pre>
         </div>
       )}
@@ -33,4 +41,3 @@ const App = () => {
 };
 
 export default App;
-
